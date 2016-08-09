@@ -152,7 +152,7 @@ namespace Microsoft.AspNetCore.DataProtection
         public void RoundTrip_ProtectedData()
         {
             // Arrange
-            var ephemeralProtector = new EphemeralDataProtectionProvider().CreateProtector("my purpose");
+            var ephemeralProtector = new EphemeralDataProtectionProvider(NullLoggerFactory.Instance).CreateProtector("my purpose");
             var timeLimitedProtector = new TimeLimitedDataProtector(ephemeralProtector);
             var expectedExpiration = StringToDateTime("2020-01-01 00:00:00Z");
 

@@ -9,18 +9,11 @@ namespace Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.Configurat
 {
     /// <summary>
     /// A descriptor which can create an authenticated encryption system based upon the
-    /// configuration provided by an <see cref="CngGcmAuthenticatedEncryptionSettings"/> object.
+    /// configuration provided by an <see cref="CngGcmAuthenticatedEncryptorConfiguration"/> object.
     /// </summary>
     public sealed class CngGcmAuthenticatedEncryptorDescriptor : IAuthenticatedEncryptorDescriptor
     {
-        private readonly ILogger _log;
-
-        public CngGcmAuthenticatedEncryptorDescriptor(CngGcmAuthenticatedEncryptionSettings settings, ISecret masterKey)
-            : this(settings, masterKey, services: null)
-        {
-        }
-
-        public CngGcmAuthenticatedEncryptorDescriptor(CngGcmAuthenticatedEncryptionSettings settings, ISecret masterKey, IServiceProvider services)
+        public CngGcmAuthenticatedEncryptorDescriptor(CngGcmAuthenticatedEncryptorConfiguration settings, ISecret masterKey)
         {
             if (settings == null)
             {
@@ -34,17 +27,11 @@ namespace Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.Configurat
 
             Settings = settings;
             MasterKey = masterKey;
-            _log = services.GetLogger<CngGcmAuthenticatedEncryptorDescriptor>();
         }
 
         internal ISecret MasterKey { get; }
 
-        internal CngGcmAuthenticatedEncryptionSettings Settings { get; }
-
-        public IAuthenticatedEncryptor CreateEncryptorInstance()
-        {
-            return Settings.CreateAuthenticatedEncryptorInstance(MasterKey, _log);
-        }
+        internal CngGcmAuthenticatedEncryptorConfiguration Settings { get; }
 
         public XmlSerializedDescriptorInfo ExportToXml()
         {

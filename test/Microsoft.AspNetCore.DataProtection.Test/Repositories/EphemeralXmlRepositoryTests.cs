@@ -13,7 +13,7 @@ namespace Microsoft.AspNetCore.DataProtection.Repositories
         public void GetAllElements_Empty()
         {
             // Arrange
-            var repository = new EphemeralXmlRepository(null);
+            var repository = new EphemeralXmlRepository(NullLoggerFactory.Instance);
 
             // Act & assert
             Assert.Empty(repository.GetAllElements());
@@ -26,7 +26,7 @@ namespace Microsoft.AspNetCore.DataProtection.Repositories
             var element1 = XElement.Parse(@"<element1 />");
             var element2 = XElement.Parse(@"<element1 />");
             var element3 = XElement.Parse(@"<element1 />");
-            var repository = new EphemeralXmlRepository(null);
+            var repository = new EphemeralXmlRepository(NullLoggerFactory.Instance);
 
             // Act & assert
             repository.StoreElement(element1, "Invalid friendly name."); // nobody should care about the friendly name

@@ -13,18 +13,6 @@ namespace Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.Configurat
     /// </summary>
     public sealed class ManagedAuthenticatedEncryptorDescriptorDeserializer : IAuthenticatedEncryptorDescriptorDeserializer
     {
-        private readonly IServiceProvider _services;
-
-        public ManagedAuthenticatedEncryptorDescriptorDeserializer()
-            : this(services: null)
-        {
-        }
-
-        public ManagedAuthenticatedEncryptorDescriptorDeserializer(IServiceProvider services)
-        {
-            _services = services;
-        }
-
         /// <summary>
         /// Imports the <see cref="ManagedAuthenticatedEncryptorDescriptor"/> from serialized XML.
         /// </summary>
@@ -42,7 +30,7 @@ namespace Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.Configurat
             //   <masterKey>...</masterKey>
             // </descriptor>
 
-            var settings = new ManagedAuthenticatedEncryptionSettings();
+            var settings = new ManagedAuthenticatedEncryptorConfiguration();
 
             var encryptionElement = element.Element("encryption");
             settings.EncryptionAlgorithmType = FriendlyNameToType((string)encryptionElement.Attribute("algorithm"));
@@ -53,7 +41,7 @@ namespace Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.Configurat
 
             Secret masterKey = ((string)element.Element("masterKey")).ToSecret();
 
-            return new ManagedAuthenticatedEncryptorDescriptor(settings, masterKey, _services);
+            return new ManagedAuthenticatedEncryptorDescriptor(settings, masterKey);
         }
 
         // Any changes to this method should also be be reflected

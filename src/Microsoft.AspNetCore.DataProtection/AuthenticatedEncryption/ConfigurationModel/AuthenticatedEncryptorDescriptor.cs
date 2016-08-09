@@ -8,18 +8,11 @@ namespace Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.Configurat
 {
     /// <summary>
     /// A descriptor which can create an authenticated encryption system based upon the
-    /// configuration provided by an <see cref="AuthenticatedEncryptionSettings"/> object.
+    /// configuration provided by an <see cref="AuthenticatedEncryptorConfiguration"/> object.
     /// </summary>
     public sealed class AuthenticatedEncryptorDescriptor : IAuthenticatedEncryptorDescriptor
     {
-        private readonly IServiceProvider _services;
-
-        public AuthenticatedEncryptorDescriptor(AuthenticatedEncryptionSettings settings, ISecret masterKey)
-            : this(settings, masterKey, services: null)
-        {
-        }
-
-        public AuthenticatedEncryptorDescriptor(AuthenticatedEncryptionSettings settings, ISecret masterKey, IServiceProvider services)
+        public AuthenticatedEncryptorDescriptor(AuthenticatedEncryptorConfiguration settings, ISecret masterKey)
         {
             if (settings == null)
             {
@@ -33,17 +26,11 @@ namespace Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.Configurat
 
             Settings = settings;
             MasterKey = masterKey;
-            _services = services;
         }
 
         internal ISecret MasterKey { get; }
 
-        internal AuthenticatedEncryptionSettings Settings { get; }
-
-        public IAuthenticatedEncryptor CreateEncryptorInstance()
-        {
-            return Settings.CreateAuthenticatedEncryptorInstance(MasterKey, _services);
-        }
+        internal AuthenticatedEncryptorConfiguration Settings { get; }
 
         public XmlSerializedDescriptorInfo ExportToXml()
         {
@@ -56,7 +43,7 @@ namespace Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.Configurat
             var encryptionElement = new XElement("encryption",
                 new XAttribute("algorithm", Settings.EncryptionAlgorithm));
 
-            var validationElement = (AuthenticatedEncryptionSettings.IsGcmAlgorithm(Settings.EncryptionAlgorithm))
+            var validationElement = (Settings.IsGcmAlgorithm())
                 ? (object)new XComment(" AES-GCM includes a 128-bit authentication tag, no extra validation algorithm required. ")
                 : (object)new XElement("validation",
                     new XAttribute("algorithm", Settings.ValidationAlgorithm));
